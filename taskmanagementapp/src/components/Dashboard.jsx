@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Clock, List, PlusCircle, Archive, AlertCircle } from 'lucide-react';
+import AddTask from './AddTask';
 
-const Dashboard = () => {
+const Dashboard = ({ tasks }) => {
   const [tasks, setTasks] = useState([
     { id: 1, title: 'Complete project proposal', status: 'in-progress', priority: 'high', dueDate: '2024-11-20' },
     { id: 2, title: 'Review team presentations', status: 'pending', priority: 'medium', dueDate: '2024-11-18' },
@@ -34,6 +35,26 @@ const Dashboard = () => {
     inProgress: tasks.filter(t => t.status === 'in-progress').length,
     pending: tasks.filter(t => t.status === 'pending').length
   };
+
+
+  // Toggle modal for adding a task
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  // Function to handle task status change
+  const handleStatusChange = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, status: task.status === 'completed' ? 'in-progress' : 'completed' }
+        : task
+    ));
+  };
+
+  // Function to add a new task
+  const addTask = (newTask) => {
+    setTasks([...tasks, newTask]);
+    setIsModalOpen(false);
+  };
+
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -123,6 +144,10 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+
+  
+      {isModalOpen && <AddTask onAddTask={addTask} />}
     </div>
   );
 };
